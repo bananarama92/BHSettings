@@ -1,0 +1,48 @@
+name: pre-commit
+
+on:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  pre-commit:
+    runs-on: ubuntu-latest
+    if: github.event.head_commit.message != 'Automatic YAML pre-commit linting'
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies
+      run: |
+        pip install --upgrade pip
+        pip install 'pyyaml>=5.1'
+
+    - name: Python info
+      run: |
+        which python
+        python --version
+        pip list
+
+    - name: Lint
+      run: |
+        HASH_BEFORE=$(python get_hash.py room_settings.yaml)
+        python lint.py room_settings.yaml
+        HASH_AFTER=$(python get_hash.py room_settings.yaml)
+
+        if [ "$HASH_BEFORE" != "$HASH_AFTER" ]; then
+          echo "Changes detected; pushing updated room_settings.yaml file"
+          git config --global user.name 'Auto-lint'
+          git add room_settings.yaml
+          git commit -m "Automatic YAML pre-commit linting"
+          git push
+        else
+          echo "No changes detected"
+        fi
