@@ -9,6 +9,10 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
 
+defaults:
+  run:
+    shell: bash
+
 jobs:
   pre-commit:
     runs-on: ubuntu-latest
@@ -34,17 +38,4 @@ jobs:
         pip list
 
     - name: Lint
-      run: |
-        HASH_BEFORE=$(python get_hash.py room_settings.yaml)
-        python lint.py room_settings.yaml
-        HASH_AFTER=$(python get_hash.py room_settings.yaml)
-
-        if [ "$HASH_BEFORE" != "$HASH_AFTER" ]; then
-          echo "Changes detected; pushing updated room_settings.yaml file"
-          git config --global user.name 'Auto-lint'
-          git add room_settings.yaml
-          git commit --amend --no-edit
-          git push --force
-        else
-          echo "No changes detected"
-        fi
+      run: bash ./lint.sh
