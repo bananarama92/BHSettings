@@ -3,6 +3,7 @@ name: pre-commit
 on:
   push:
     branches: [main]
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
@@ -11,9 +12,10 @@ concurrency:
 jobs:
   pre-commit:
     runs-on: ubuntu-latest
-    if: github.event.head_commit.message != 'Automatic YAML pre-commit linting'
     steps:
     - uses: actions/checkout@v3
+      with:
+        fetch-depth: 2
 
     - name: Set up Python
       uses: actions/setup-python@v4
@@ -41,8 +43,8 @@ jobs:
           echo "Changes detected; pushing updated room_settings.yaml file"
           git config --global user.name 'Auto-lint'
           git add room_settings.yaml
-          git commit -m "Automatic YAML pre-commit linting"
-          git push
+          git commit --amend --no-edit
+          git push --force
         else
           echo "No changes detected"
         fi
