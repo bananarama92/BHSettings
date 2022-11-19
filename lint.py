@@ -19,6 +19,7 @@ def main(filename: str) -> None:
             else:
                 f2.write(f"{k}: {v!r}\n")
 
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(usage="python ./lint.py room_settings.yaml", description=__doc__)
     parser.add_argument("path", help="Path to the to-be linted .yaml file")

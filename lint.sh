@@ -10,8 +10,9 @@ cp room_settings.yaml /tmp/head.yaml
 git checkout HEAD~1
 cp room_settings.yaml /tmp/head_1.yaml
 git checkout -
+HASH_BEFORE=$(git rev-parse HEAD~1)
 COMMIT_BEFORE=$(git log --format=%B -n 1 HEAD)
-COMMIT_AFTER=$(python get_commit.py /tmp/head.yaml /tmp/head_1.yaml "$COMMIT_BEFORE")
+COMMIT_AFTER=$(python get_commit.py /tmp/head.yaml /tmp/head_1.yaml "$COMMIT_BEFORE" "$HASH_BEFORE")
 
 # Check if any linting is required
 HASH_BEFORE=$(python get_hash.py room_settings.yaml)
@@ -27,7 +28,7 @@ if [[ "$HASH_BEFORE" != "$HASH_AFTER" || "$COMMIT_BEFORE" != "$COMMIT_AFTER" ]];
     git config --global user.name "GitHub Action"
     git config --local user.email "action@github.com"
     git add room_settings.yaml
-    git commit --amend -m "$COMMIT_AFTER"
+    git commit --amend --allow-empty -m "$COMMIT_AFTER"
     git push --force
 else
     echo "No changes detected"
