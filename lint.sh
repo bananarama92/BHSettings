@@ -10,7 +10,7 @@ cp room_settings.yaml /tmp/head.yaml
 git checkout HEAD~1
 cp room_settings.yaml /tmp/head_1.yaml
 git checkout -
-HASH_BEFORE=$(git rev-parse HEAD~1)
+HASH_BEFORE=$(git rev-parse HEAD)
 COMMIT_BEFORE=$(git log --format=%B -n 1 HEAD)
 COMMIT_AFTER=$(python get_commit.py /tmp/head.yaml /tmp/head_1.yaml "$COMMIT_BEFORE" "$HASH_BEFORE")
 
