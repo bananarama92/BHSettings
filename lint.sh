@@ -25,8 +25,8 @@ echo
 
 if [[ "$HASH_BEFORE" != "$HASH_AFTER" || "$COMMIT_BEFORE" != "$COMMIT_AFTER" ]]; then
     echo "Changes detected; pushing updated room_settings.yaml file"
-    git config --global user.name "GitHub Action"
-    git config --local user.email "action@github.com"
+    git config --global user.name "github-actions[bot]"
+    git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
     git add room_settings.yaml
     git commit --amend --allow-empty -m "$COMMIT_AFTER"
     git push --force
