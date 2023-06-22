@@ -2,11 +2,14 @@
 
 from __future__ import annotations
 
-from typing import NamedTuple
+from typing import NamedTuple, TYPE_CHECKING
 from collections.abc import Iterable
 import argparse
 
 import yaml
+
+if TYPE_CHECKING:
+    from typing_extensions import Self
 
 TEMPLATE = """\n
 Original commit hash: \`{commit_hash}\`
@@ -17,6 +20,7 @@ New bans:             {bans_added!r}
 Removed bans:         {bans_removed!r}
 """
 
+
 class Diff(NamedTuple):
     added: list[int]
     removed: list[int]
@@ -24,11 +28,11 @@ class Diff(NamedTuple):
     def __bool__(self) -> bool:
         return bool(self.added) or bool(self.removed)
 
-
-def get_diff(lst_new: Iterable[int], lst_old: Iterable[int]) -> Diff:
-    set_new = set(lst_new)
-    set_old = set(lst_old)
-    return Diff(added=sorted(set_new - set_old), removed=sorted(set_old - set_new))
+    @classmethod
+    def from_ids(cls, ids_new: Iterable[int], ids_old: Iterable[int]) -> Self:
+        set_new = set(ids_new)
+        set_old = set(ids_old)
+        return cls(added=sorted(set_new - set_old), removed=sorted(set_old - set_new))
 
 
 def main(path_new: str, path_old: str, commit_msg: str, commit_hash: str) -> str:
@@ -41,8 +45,8 @@ def main(path_new: str, path_old: str, commit_msg: str, commit_hash: str) -> str
     with open(path_old, "r", encoding="utf8") as f:
         dct_old = yaml.load(f.read(), Loader=yaml.SafeLoader)
 
-    admins = get_diff(dct_new["admin_list"], (dct_old["admin_list"]))
-    bans = get_diff(dct_new["ban_list"], (dct_old["ban_list"]))
+    admins = Diff.from_ids(dct_new["admin_list"], dct_old["admin_list"])
+    bans = Diff.from_ids(dct_new["ban_list"], dct_old["ban_list"])
     if (admins or bans):
         return commit_msg + TEMPLATE.format(
             commit_hash=commit_hash,
