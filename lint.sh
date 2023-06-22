@@ -10,9 +10,9 @@ cp room_settings.yaml /tmp/head.yaml
 git checkout HEAD~1
 cp room_settings.yaml /tmp/head_1.yaml
 git checkout -
-HASH_BEFORE=$(git rev-parse HEAD)
+GIT_HASH=$(git rev-parse HEAD)
 COMMIT_BEFORE=$(git log --format=%B -n 1 HEAD)
-COMMIT_AFTER=$(python get_commit.py /tmp/head.yaml /tmp/head_1.yaml "$COMMIT_BEFORE" "$HASH_BEFORE")
+COMMIT_AFTER=$(python get_commit.py /tmp/head.yaml /tmp/head_1.yaml "$COMMIT_BEFORE" "$GIT_HASH")
 
 # Check if any linting is required
 HASH_BEFORE=$(python get_hash.py room_settings.yaml)
