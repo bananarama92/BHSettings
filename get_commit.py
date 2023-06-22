@@ -9,7 +9,7 @@ import argparse
 import yaml
 
 TEMPLATE = """\n
-Original commit hash: {commit_hash!r}
+Original commit hash: \`{commit_hash}\`
 
 New admins:           {admins_added!r}
 Removed admins:       {admins_removed!r}
