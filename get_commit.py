@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     from typing_extensions import Self
 
 TEMPLATE = """\n
-Original commit hash: `{commit_hash}\
+Original commit hash: `{commit_hash}`
 
 New admins:           {admins_added!r}
 Removed admins:       {admins_removed!r}
