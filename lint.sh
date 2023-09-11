@@ -3,7 +3,7 @@
 set -euo pipefail
 
 # turn the detached message off
-git config --global advice.detachedHead false
+git config --local advice.detachedHead false
 
 # Check if any changes have been made to the admin or ban list and, if so, append the commit message
 cp room_settings.yaml /tmp/head.yaml
@@ -25,8 +25,8 @@ echo
 
 if [[ "$HASH_BEFORE" != "$HASH_AFTER" || "$COMMIT_BEFORE" != "$COMMIT_AFTER" ]]; then
     echo "Changes detected; pushing updated room_settings.yaml file"
-    git config --global user.name "github-actions[bot]"
-    git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+    git config --local user.name "github-actions[bot]"
+    git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
     git add room_settings.yaml
     git commit --amend --allow-empty -m "$COMMIT_AFTER"
     git push --force
