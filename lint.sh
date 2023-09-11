@@ -20,7 +20,7 @@ python lint.py room_settings.yaml
 HASH_AFTER=$(python get_hash.py room_settings.yaml)
 echo
 echo "Pre-lint hash: $HASH_BEFORE"
-echo "Post-lint hash: $HASH_BEFORE"
+echo "Post-lint hash: $HASH_AFTER"
 echo
 
 if [[ "$HASH_BEFORE" != "$HASH_AFTER" || "$COMMIT_BEFORE" != "$COMMIT_AFTER" ]]; then
